@@ -1,11 +1,23 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import AutoImport from 'unplugin-auto-import/vite';
+import Components from 'unplugin-vue-components/vite';
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
 import { viteElectronPlugin } from './plugins/vite-electron-plugin';
 import { viteElectronBuildPlugin } from './plugins/vite-electron-build-plugin';
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), viteElectronPlugin(), viteElectronBuildPlugin()],
+  plugins: [
+    vue(),
+    viteElectronPlugin(),
+    viteElectronBuildPlugin(),
+    AutoImport({
+      resolvers: [ElementPlusResolver()]
+    }),
+    Components({
+      resolvers: [ElementPlusResolver()]
+    })
+  ],
   build: {
     // 设置最终构建的浏览器兼容目标
     target: 'es2015',
