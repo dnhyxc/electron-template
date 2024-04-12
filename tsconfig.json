@@ -18,8 +18,18 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    // 引入模块的方式
+    "baseUrl": ".",
+    // 路径别名配置
+    "paths": {
+      "@/*": ["src/*"],
+      "@styles/*": ["src/styles/*"]
+    }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  // "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],
+  // "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "./src/styles/**/*", "src/typings/index.d.ts"],
+  "exclude": ["node_modules", "dist"]
 }

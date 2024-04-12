@@ -1,6 +1,7 @@
 <template>
-  <h3>{{ msg }}</h3>
-  <el-button type="primary">我是 ElButton</el-button>
+  <div class="wrap">
+    <h3>{{ msg }}</h3>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -10,3 +11,5 @@ interface IProps {
 
 defineProps<IProps>();
 </script>
+
+<style scoped></style>

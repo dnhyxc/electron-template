@@ -1,36 +1,30 @@
 <template>
-  <div>
-    <a href="https://www.electronjs.org/" target="_blank">
-      <img src="./assets/electron.svg" class="logo" alt="Electron logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Electron + Vue3 + Template" />
+  <RouterView v-if="isRouterAlive" v-slot="{ Component }">
+    <component :is="Component" />
+  </RouterView>
 </template>
 
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue';
+import { ref, nextTick, provide } from 'vue';
+
+const isRouterAlive = ref<boolean>(true);
 
 window.electronApi.sendTest('dnhyxc');
 
 window.electronApi.onTest((value: string) => {
-    console.log(value, '渲染进程中监听到了 test 事件');
+  console.log(value, '渲染进程中监听到了 test 事件');
 });
+
+// 刷新当前页面
+const reload = () => {
+  isRouterAlive.value = false;
+  nextTick(() => {
+    isRouterAlive.value = true;
+  });
+};
+
+// 父组件注册刷新当前页面的方法
+provide('reload', reload);
 </script>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #21b1ffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+<style scoped></style>

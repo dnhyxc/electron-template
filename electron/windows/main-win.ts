@@ -7,6 +7,9 @@ export const createMainWindow = () => {
   globalInfo.mainWin = new BrowserWindow({
     width: 800,
     height: 600,
+    minWidth: 800,
+    minHeight: 600,
+    titleBarStyle: 'hidden',
     webPreferences: {
       nodeIntegration: false, // 为了解决require 识别问题
       contextIsolation: true, // 这里需要设置为 true， 否则导入 preload.js 会报错
@@ -21,5 +24,11 @@ export const createMainWindow = () => {
 };
 
 ipcMain.on('test', (e, status) => {
+  console.log(status, 'status');
   e.sender.send('test', 'main win send message to render: ' + status);
+});
+
+ipcMain.on('info', (e, status) => {
+  console.log(status, 'status');
+  e.sender.send('info', { id: status, title: 'Electron Vue3 template' });
 });

@@ -36,7 +36,7 @@ const watchFolderFilesChange = (folderPath: string, electronProcess: ChildProces
               electronProcess.kill();
               // 重新编译主进程代码并重新启动Electron进程
               buildConfig();
-              electronProcess = spawn(require('electron'), ['dist/main.js', IP]);
+              electronProcess = spawn(require('electron') as any, ['dist/main.js', IP]);
             }
           });
         }
@@ -60,7 +60,7 @@ export const viteElectronPlugin = (): Plugin => {
         const addressInfo = server?.httpServer?.address() as AddressInfo;
         const IP = `http://localhost:${addressInfo.port}`;
         // 启动Electron进程
-        let electronProcess = spawn(require('electron'), ['dist/main.js', IP]);
+        let electronProcess: ChildProcessWithoutNullStreams = spawn(require('electron') as any, ['dist/main.js', IP]);
 
         watchFolderFilesChange('electron', electronProcess, IP);
 
@@ -70,7 +70,7 @@ export const viteElectronPlugin = (): Plugin => {
           electronProcess.kill();
           // 重新编译主进程代码并重新启动Electron进程
           buildConfig();
-          electronProcess = spawn(require('electron'), ['dist/main.js', IP]);
+          electronProcess = spawn(require('electron') as any, ['dist/main.js', IP]);
         });
 
         // 监听Electron进程的stdout输出
