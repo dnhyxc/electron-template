@@ -1,20 +1,20 @@
-import { contextBridge, ipcRenderer } from "electron";
+import { contextBridge, ipcRenderer } from 'electron';
 
 const sendMethods = {
   sendTest: (type: string) => {
-    ipcRenderer.send("test", type);
-  },
+    ipcRenderer.send('test', type);
+  }
 };
 
 const onMethods = {
   onTest: (cb: (value: string) => void) => {
-    ipcRenderer.on("test", (e, value: string) => cb(value));
-  },
+    ipcRenderer.on('test', (e, value: string) => cb(value));
+  }
 };
 
-contextBridge.exposeInMainWorld("electronApi", {
+contextBridge.exposeInMainWorld('electronApi', {
   ...sendMethods,
-  ...onMethods,
+  ...onMethods
 });
 
-console.log(sendMethods, "yellow-dnhyxc", onMethods);
+console.log(sendMethods, 'yellow-dnhyxc', onMethods);

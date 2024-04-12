@@ -4,4 +4,4 @@ declare interface Window {
   electronApi: any;
 }
 
-declare module "*";
+declare module '*';

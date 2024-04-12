@@ -9,5 +9,3 @@ interface IProps {
 
 defineProps<IProps>();
 </script>
-
-<style scoped></style>

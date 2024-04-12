@@ -1,7 +1,6 @@
-// @ts-ignore
-import path from "path";
-import { BrowserWindow } from "electron";
-import { globalInfo } from "../constant";
+import path from 'path';
+import { BrowserWindow } from 'electron';
+import { globalInfo } from '../constant';
 
 export const createMainWindow = () => {
   globalInfo.mainWin = new BrowserWindow({
@@ -10,12 +9,12 @@ export const createMainWindow = () => {
     webPreferences: {
       nodeIntegration: false, // 为了解决require 识别问题
       contextIsolation: true, // 这里需要设置为 true， 否则导入 preload.js 会报错
-      preload: path.join(__dirname, "./preload.js"),
+      preload: path.join(__dirname, './preload.js'),
     },
     // icon: path.join(__dirname, getIconPath()),
   });
 
   globalInfo.mainWin?.webContents.openDevTools();
 
-  globalInfo.mainWin?.loadURL("http://localhost:5173");
+  globalInfo.mainWin?.loadURL('http://localhost:5173');
 };

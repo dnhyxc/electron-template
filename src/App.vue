@@ -1,13 +1,3 @@
-<script setup lang="ts">
-import HelloWorld from "./components/HelloWorld.vue";
-
-window.electronApi.sendTest("dnhyxc");
-
-window.electronApi.onTest((value: string) => {
-  console.log(value, "渲染进程中监听到了 test 事件");
-});
-</script>
-
 <template>
   <div>
     <a href="https://www.electronjs.org/" target="_blank">
@@ -19,6 +9,16 @@ window.electronApi.onTest((value: string) => {
   </div>
   <HelloWorld msg="Electron + Vue3 + Template" />
 </template>
+
+<script setup lang="ts">
+import HelloWorld from './components/HelloWorld.vue';
+
+window.electronApi.sendTest('dnhyxc');
+
+window.electronApi.onTest((value: string) => {
+    console.log(value, '渲染进程中监听到了 test 事件');
+});
+</script>
 
 <style scoped>
 .logo {
