@@ -1,13 +1,9 @@
 <template>
   <div class="el-container-wrap">
     <el-container>
-      <el-aside class="aside-wrap" width="160">
-        <div class="menu-list">Menu</div>
-      </el-aside>
+      <LeftMenu />
       <el-main class="el-main">
-        <div class="header-warp">
-          <div class="left"><el-button type="primary" class="back" @click="goBack">返回</el-button> header</div>
-        </div>
+        <Header />
         <div class="content">
           <RouterView v-if="isRouterAlive" v-slot="{ Component }">
             <component :is="Component" />
@@ -21,6 +17,8 @@
 <script setup lang="ts">
 import { ref, nextTick, provide } from 'vue';
 import { useRouter } from 'vue-router';
+import Header from '@/components/Header.vue';
+import LeftMenu from '@/components/LeftMenu.vue';
 
 const router = useRouter();
 
@@ -51,19 +49,6 @@ const goBack = () => {
   flex-direction: column;
   width: 100%;
   height: 100vh;
-
-  .aside-wrap {
-    -webkit-app-region: drag;
-    padding: 0 8px;
-    border-right: 1px solid var(--border-color);
-
-    .menu-list {
-      margin-top: 28px;
-      width: 160px;
-      height: 100%;
-      background-color: var(--background);
-    }
-  }
 
   .el-main {
     display: flex;

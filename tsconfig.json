@@ -1,35 +1,48 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "skipLibCheck": true,
-
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "preserve",
-
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-
+    "noEmit": false,
+    "suppressImplicitAnyIndexErrors": true,
+    "ignoreDeprecations": "5.0",
+    "noImplicitAny": true,
+    // 不允许隐式any类型
+    "module": "esnext",
+    // 模块引入方式
+    "target": "es5",
+    "moduleResolution": "node",
     // 引入模块的方式
     "baseUrl": ".",
     // 路径别名配置
     "paths": {
-      "@/*": ["src/*"],
-      "@styles/*": ["src/styles/*"]
+      "@/*": [
+        "src/*"
+      ],
+      "@styles/*": [
+        "src/styles/*"
+      ]
     }
   },
-  // "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],
-  // "references": [{ "path": "./tsconfig.node.json" }]
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "./src/styles/**/*", "src/typings/index.d.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "./src/styles/**/*",
+    "src/typings/index.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

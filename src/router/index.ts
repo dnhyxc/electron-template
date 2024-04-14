@@ -1,6 +1,6 @@
-import { createRouter, RouteRecordRaw, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 
-export const routes: Array<RouteRecordRaw> = [
+export const routes = [
   {
     path: '/',
     redirect: '/home'
@@ -44,15 +44,7 @@ export const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  // electron 只支持 hash router，使用 history router 会出现找不到对应路由得情况
   history: createWebHistory(),
-  scrollBehavior: (_to, _from, savePosition) => {
-    if (savePosition) {
-      return savePosition;
-    } else {
-      return { top: 0 };
-    }
-  },
   routes
 });
 

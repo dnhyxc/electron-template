@@ -5,6 +5,8 @@
   "main": "dist/main.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development vite",
+    "start": "cross-env NODE_ENV=production && electron .",
+    "build:vue": "rimraf dist && cross-env NODE_ENV=production && vue-tsc --noEmit && vite build",
     "build": "rimraf dist && rimraf app && vue-tsc --noEmit && vite build && cross-env NODE_ENV=production && electron-builder",
     "prepare": "husky install",
     "test": "npx eslint ./src  --ext ts,vue,js --fix",
@@ -16,9 +18,11 @@
     "vue-router": "^4.3.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.24.4",
     "@commitlint/cli": "^19.2.1",
     "@commitlint/config-conventional": "^19.1.0",
     "@rollup/plugin-eslint": "^9.0.5",
+    "@types/node": "^20.12.7",
     "@typescript-eslint/eslint-plugin": "^7.6.0",
     "@typescript-eslint/parser": "^7.6.0",
     "@vitejs/plugin-vue": "^5.0.4",

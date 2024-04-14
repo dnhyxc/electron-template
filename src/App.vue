@@ -7,7 +7,7 @@
 <script setup lang="ts">
 import { ref, nextTick, provide } from 'vue';
 
-const isRouterAlive = ref<boolean>(true);
+const isRouterAlive = ref(true);
 
 window.electronApi.sendTest('dnhyxc');
 

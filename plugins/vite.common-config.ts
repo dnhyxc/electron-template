@@ -18,6 +18,3 @@ export const buildConfig = () => {
     external: ['electron']
   });
 };
-
-// 需要监听的文件
-export const WATCH_FILES = ['electron/index.ts', 'preload/index.ts', 'electron/windows/main-win.ts'];

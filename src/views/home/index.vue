@@ -16,7 +16,7 @@
     </div>
     <HelloWorld msg="Electron + Vue3 + Template" />
     <div class="action">
-      <el-button type="primary" @click="onSendMsgToMainWin">我是 ElButton</el-button>
+      <el-button type="primary" @click="onSendMsgToMainWin">发送消息给主进程</el-button>
       <el-button type="success" @click="toDetail">前往详情</el-button>
     </div>
   </div>
@@ -58,9 +58,11 @@ window.electronApi.onGetInfo((value: { id: number; title: string }) => {
     will-change: filter;
     transition: filter 300ms;
   }
+
   .logo:hover {
     filter: drop-shadow(0 0 2em #21b1ffaa);
   }
+
   .logo.vue:hover {
     filter: drop-shadow(0 0 2em #42b883aa);
   }

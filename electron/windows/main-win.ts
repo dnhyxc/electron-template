@@ -1,21 +1,43 @@
+// @ts-ignore
 import path from 'path';
 import { ipcMain, BrowserWindow } from 'electron';
 import { globalInfo } from '../constant';
 import { getIconPath } from '../utils';
 
+let timer: ReturnType<typeof setTimeout> | null = null;
+
 export const createMainWindow = () => {
   globalInfo.mainWin = new BrowserWindow({
-    width: 800,
-    height: 600,
-    minWidth: 800,
-    minHeight: 600,
+    width: 1080,
+    height: 750,
+    minWidth: 1080,
+    minHeight: 750,
     titleBarStyle: 'hidden',
     webPreferences: {
       nodeIntegration: false, // 为了解决require 识别问题
       contextIsolation: true, // 这里需要设置为 true， 否则导入 preload.js 会报错
-      preload: path.join(__dirname, './preload.js')
+      preload: path.join(__dirname, './preload.js'),
+      // 如果是开发模式可以使用devTools 调试
+      // devTools: process.env.NODE_ENV === 'development' || config.build.openDevTools,
+      // 在macos中启用橡皮动画
+      scrollBounce: process.platform === 'darwin'
     },
+    // 设置 transparent 会导致 win.restore() 失效
+    // transparent: true, // 当transparent为true会导致win.restore()无效
     icon: path.join(__dirname, getIconPath())
+  });
+
+  // 禁止右键开启右键菜单
+  globalInfo.mainWin?.hookWindowMessage(278, function (e) {
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+    globalInfo.mainWin?.setEnabled(false); //窗口禁用
+    timer = setTimeout(() => {
+      globalInfo.mainWin?.setEnabled(true);
+    }, 100); //延时太快会立刻启动，太慢会妨碍窗口其他操作，可自行测试最佳时间
+    return true;
   });
 
   globalInfo.mainWin?.webContents.openDevTools();
@@ -24,11 +46,28 @@ export const createMainWindow = () => {
 };
 
 ipcMain.on('test', (e, status) => {
-  console.log(status, 'status');
+  console.log(status, 'test');
   e.sender.send('test', 'main win send message to render: ' + status);
 });
 
 ipcMain.on('info', (e, status) => {
-  console.log(status, 'status');
+  console.log(status, 'info');
   e.sender.send('info', { id: status, title: 'Electron Vue3 template' });
+});
+
+ipcMain.on('win-min', () => {
+  globalInfo.mainWin?.minimize();
+});
+
+ipcMain.on('win-max', (e) => {
+  if (globalInfo.mainWin?.isMaximized()) {
+    globalInfo.mainWin?.restore();
+  } else {
+    globalInfo.mainWin?.maximize();
+  }
+  e.sender.send('win-max', globalInfo.mainWin?.isMaximized());
+});
+
+ipcMain.on('win-close', () => {
+  globalInfo.mainWin?.hide();
 });

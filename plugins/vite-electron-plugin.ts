@@ -1,4 +1,6 @@
+// @ts-ignore
 import fs from 'fs';
+// @ts-ignore
 import path from 'path';
 import { spawn } from 'child_process';
 import type { ChildProcessWithoutNullStreams } from 'child_process';
@@ -6,10 +8,17 @@ import type { Plugin } from 'vite';
 import type { AddressInfo } from 'net';
 import { buildConfig } from './vite.common-config';
 
+const getLog = (data: Buffer) => {
+  // 判断 data 是否有值
+  if (data.length > 2) {
+    console.log(`Log: ${data}`);
+  }
+};
+
 // 监听文件夹中文件的变化，重新打包启动
 const watchFolderFilesChange = (folderPath: string, electronProcess: ChildProcessWithoutNullStreams, IP: string) => {
   // 遍历文件夹
-  fs.readdir(folderPath, (err, files) => {
+  fs.readdir(folderPath, (err: Error, files: File[]) => {
     if (err) {
       console.error('Error reading directory:', err);
       return;
@@ -19,7 +28,7 @@ const watchFolderFilesChange = (folderPath: string, electronProcess: ChildProces
       const filePath = path.join(folderPath, file);
 
       // 检查文件状态
-      fs.stat(filePath, (err, stats) => {
+      fs.stat(filePath, (err: Error, stats: fs.Stats) => {
         if (err) {
           console.error('Error getting file stats:', err);
           return;
@@ -30,13 +39,15 @@ const watchFolderFilesChange = (folderPath: string, electronProcess: ChildProces
           watchFolderFilesChange(filePath, electronProcess, IP);
         } else {
           // 监听文件变化
-          fs.watchFile(filePath, (curr, prev) => {
+          fs.watchFile(filePath, (curr: fs.Stats, prev: fs.Stats) => {
             if (curr.mtimeMs !== prev.mtimeMs) {
               // 杀死当前的Electron进程
               electronProcess.kill();
               // 重新编译主进程代码并重新启动Electron进程
               buildConfig();
               electronProcess = spawn(require('electron') as any, ['dist/main.js', IP]);
+              // 监听Electron进程的stdout输出
+              electronProcess.stdout?.on('data', getLog);
             }
           });
         }
@@ -71,12 +82,12 @@ export const viteElectronPlugin = (): Plugin => {
           // 重新编译主进程代码并重新启动Electron进程
           buildConfig();
           electronProcess = spawn(require('electron') as any, ['dist/main.js', IP]);
+          // 监听Electron进程的stdout输出
+          electronProcess.stdout?.on('data', getLog);
         });
 
         // 监听Electron进程的stdout输出
-        electronProcess.stdout?.on('data', (data) => {
-          console.log(`Log: ${data}`);
-        });
+        electronProcess.stdout?.on('data', getLog);
       });
     }
   };
