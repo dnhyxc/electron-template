@@ -34,23 +34,45 @@ cnpm i electron electron-builder -D
 npm i vite-plugin-electron vite-plugin-electron-renderer -D
 ```
 
-- vite-plugin-electron：这个插件可以在启动 vue 项目时，自动启动 electron 项目。该插件会在项目根目录下自动创建一个名为 `dist-electron` 的文件夹，这个文件夹中的 `index.js` 就是它对 electron 主进程打包后的产物，用于 electron 的运行。也就是说，`dist-electron/index.js` 需要配置在 `package.json` 的 `main` 属性上：
+- vite-plugin-electron：这个插件可以在启动 vue 项目时，自动启动 electron 项目。该插件会在项目根目录下自动创建一个名为 `dist-electron/index.js` 的文件，这个文件就是它对 electron 主进程打包后的产物，用于 electron 的运行。也就是说，`dist-electron/index.js` 需要配置在 `package.json` 的 `main` 属性上：
 
 ```json
 {
   // ...
   "main": "dist-electron/index.js",
-
   "scripts": {
     // ...
   }
 }
 ```
 
-配置好上述插件之后，就可以在项目根目录下创建 `electron` 文件夹了，并且在该文件夹中创建 `index.ts` 作为主进程的入口文件，具体内容如下：
+- vite-plugin-electron-renderer：这个插件是用于 electron 主进程代码的热更新，即在更改主进程代码之后，窗口会自动刷新。
+
+插件具体使用方式如下：
+
+```js
+import path from 'path';
+import {defineConfig} from 'vite';
+import vue from '@vitejs/plugin-vue';
+import electron from 'vite-plugin-electron';
+import electronRender from 'vite-plugin-electron-renderer';
+
+export default defineConfig({
+  base: '/',
+  plugins: [
+    vue(),
+    electron({
+      entry: 'electron/index.ts' // 这个是 electron 主进程的入口文件
+    }),
+    electronRender()
+  ]
+});
+```
+
+配置好上述插件之后，就可以在项目根目录下创建 `electron/index.ts` 文件作为主进程的入口文件，具体内容如下：
 
 ```ts
-import { app, BrowserWindow, ipcMain } from 'electron';
+import {app, BrowserWindow, ipcMain} from 'electron';
 
 // 屏蔽浏览器控制台警告
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true';
@@ -88,7 +110,7 @@ app.whenReady().then(createMainWindow);
 在 electron 主进程代码中增加 ipc 通信代码，具体如下设置：
 
 ```js
-import { app, BrowserWindow, ipcMain } from 'electron';
+import {app, BrowserWindow, ipcMain} from 'electron';
 
 // 屏蔽浏览器控制台警告
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true';
@@ -131,32 +153,33 @@ app.whenReady().then(createMainWindow);
 在渲染进程中增加 ipc 通信代码，以 `App.vue` 为例，具体如下：
 
 ```vue
+
 <script setup lang="ts">
-import { ipcRenderer } from 'electron';
-import { ref } from 'vue';
+  import {ipcRenderer} from 'electron';
+  import {ref} from 'vue';
 
-const message = ref('');
-const count = ref(0);
+  const message = ref('');
+  const count = ref(0);
 
-// 向主进程发送消息
-const onEmit = () => {
-  ipcRenderer.invoke('test', count.value++);
-};
+  // 向主进程发送消息
+  const onEmit = () => {
+    ipcRenderer.invoke('test', count.value++);
+  };
 
-// 接受主进程发送的消息
-ipcRenderer.on('main-test', (_, value) => {
-  console.log(value, 'value');
-  message.value = value;
-});
+  // 接受主进程发送的消息
+  ipcRenderer.on('main-test', (_, value) => {
+    console.log(value, 'value');
+    message.value = value;
+  });
 </script>
 
 <template>
   <div>
     <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
+      <img src="/vite.svg" class="logo" alt="Vite logo"/>
     </a>
     <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
+      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo"/>
     </a>
     <p>{{ message }}</p>
     <button @click="onEmit">通信</button>
@@ -164,45 +187,55 @@ ipcRenderer.on('main-test', (_, value) => {
 </template>
 
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
+  .logo {
+    height: 6em;
+    padding: 1.5em;
+    will-change: filter;
+    transition: filter 300ms;
+  }
+
+  .logo:hover {
+    filter: drop-shadow(0 0 2em #646cffaa);
+  }
+
+  .logo.vue:hover {
+    filter: drop-shadow(0 0 2em #42b883aa);
+  }
 </style>
 ```
 
 如果不需要采用 `preload` 统一管理渲染进程与主进程的通信，而直接在渲染进程中采用 `ipcRenderer` 与主进程进行通信，那么到这一步，你就可以快乐的进行功能的 coding 了。
 
-- vite-plugin-electron-renderer：这个插件是用于 electron 主进程代码的热更新，即在更改主进程代码之后，窗口会自动刷新。
+如果想更安全且集中的进行主进程与渲染进程的通信，那么使用上述方式是满足不了的，需要在主进程中增加 `preload` 配置。
 
-插件具体使用方式如下：
+#### 配置 preload
 
-```js
-import * as path from 'path';
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import electron from 'vite-plugin-electron';
-import electronRender from 'vite-plugin-electron-renderer';
+在项目根目录下创建 `preload/index.ts` 文件，具体内容如下：
 
-export default defineConfig({
-  base: '/',
-  plugins: [
-    vue(),
-    electron({
-      entry: 'electron/index.ts' // 这个是 electron 主进程的入口文件
-    }),
-    electronRender()
-  ]
+```ts
+import {contextBridge, ipcRenderer} from 'electron';
+
+const sendMethods = {
+  sendTest: (count: number) => {
+    ipcRenderer.send('test', count);
+  }
+};
+
+const onMethods = {
+  onGetTest: (cb: (value: string) => void) => {
+    // 监听事件前，先移除上一次的监听，防止监听多次
+    ipcRenderer.removeAllListeners('info');
+    ipcRenderer.on('main-test', (e, value) => cb(value));
+  }
+};
+
+contextBridge.exposeInMainWorld('electronApi', {
+  ...sendMethods,
+  ...onMethods
 });
 ```
+
+由于采用了 typescript 进行 preload 的编写，而 electron 运行时是不接受 typescript 的，因此在代码执行前需要将 preload/index.ts 编译为 js 才能运行，而之前的插件 `vite-plugin-electron` 无法将 `preload/index.vue` 打包TODO
 
 在项目根目录下创建 `plugins` 文件夹，并在该文件夹内分别创建：`vite.common-config.ts`、`vite-electron-plugin.ts`、`vite-electron-build-plugin.ts` 三个文件，其内容分别为：
 
@@ -236,11 +269,11 @@ export const buildConfig = () => {
 ```ts
 import fs from 'fs';
 import path from 'path';
-import { spawn } from 'child_process';
-import type { ChildProcessWithoutNullStreams } from 'child_process';
-import type { Plugin } from 'vite';
-import type { AddressInfo } from 'net';
-import { buildConfig } from './vite.common-config';
+import {spawn} from 'child_process';
+import type {ChildProcessWithoutNullStreams} from 'child_process';
+import type {Plugin} from 'vite';
+import type {AddressInfo} from 'net';
+import {buildConfig} from './vite.common-config';
 
 const getTimer = () => {
   const now = new Date();
@@ -340,10 +373,10 @@ export const viteElectronPlugin = (): Plugin => {
 
 ```js
 import path from 'path';
-import { app, Tray } from 'electron';
-import { createMainWindow } from './windows/main-win';
-import { isDev, isMac, getIconPath, createContextMenu } from './utils';
-import { globalInfo } from './constant';
+import {app, Tray} from 'electron';
+import {createMainWindow} from './windows/main-win';
+import {isDev, isMac, getIconPath, createContextMenu} from './utils';
+import {globalInfo} from './constant';
 
 // 屏蔽警告
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true';
@@ -488,8 +521,8 @@ ipcMain.on('win-close', () => {
 - utils/index.ts 内容如下：
 
 ```js
-import { Menu, app } from 'electron';
-import { globalInfo } from '../constant';
+import {Menu, app} from 'electron';
+import {globalInfo} from '../constant';
 
 export const isDev = process.env.NODE_ENV === 'development';
 

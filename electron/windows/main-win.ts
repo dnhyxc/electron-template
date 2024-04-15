@@ -1,8 +1,8 @@
 // @ts-ignore
 import path from 'path';
-import {ipcMain, BrowserWindow, IpcMainEvent, app} from 'electron';
-import {globalInfo} from '../constant';
-import {getIconPath, isMac} from '../utils';
+import { ipcMain, BrowserWindow, IpcMainEvent, app } from 'electron';
+import { globalInfo } from '../constant';
+import { getIconPath, isMac } from '../utils';
 
 let timer: ReturnType<typeof setTimeout> | null = null;
 
@@ -63,7 +63,7 @@ export const createMainWindow = () => {
 
 ipcMain.on('info', (e: IpcMainEvent, status: number) => {
   console.log(status, 'info');
-  e.sender.send('info', {id: status, title: 'Electron Vue3 template'});
+  e.sender.send('info', { id: status, title: 'Electron Vue3 template' });
 });
 
 ipcMain.on('win-min', () => {
