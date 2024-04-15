@@ -5,7 +5,6 @@ import vue from '@vitejs/plugin-vue';
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
 import {ElementPlusResolver} from 'unplugin-vue-components/resolvers';
-import {viteElectronPlugin} from './plugins/vite-electron-plugin';
 import {viteElectronBuildPlugin} from './plugins/vite-electron-build-plugin';
 import {viteElectronRuntimePlugin} from './plugins/vite-electron-runtime-plugin'
 
