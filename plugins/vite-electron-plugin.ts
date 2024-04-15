@@ -18,7 +18,7 @@ const getLog = (data: Buffer) => {
 // 监听文件夹中文件的变化，重新打包启动
 const watchFolderFilesChange = (folderPath: string, electronProcess: ChildProcessWithoutNullStreams, IP: string) => {
   // 遍历文件夹
-  fs.readdir(folderPath, (err: Error, files: File[]) => {
+  fs.readdir(folderPath, (err: NodeJS.ErrnoException | null, files: string[]) => {
     if (err) {
       console.error('Error reading directory:', err);
       return;
@@ -28,7 +28,7 @@ const watchFolderFilesChange = (folderPath: string, electronProcess: ChildProces
       const filePath = path.join(folderPath, file);
 
       // 检查文件状态
-      fs.stat(filePath, (err: Error, stats: fs.Stats) => {
+      fs.stat(filePath, (err: NodeJS.ErrnoException | null, stats: fs.Stats) => {
         if (err) {
           console.error('Error getting file stats:', err);
           return;

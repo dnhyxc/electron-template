@@ -1,25 +1,25 @@
 // @ts-ignore
 import path from 'path';
-import { ipcMain, BrowserWindow } from 'electron';
-import { globalInfo } from '../constant';
-import { getIconPath } from '../utils';
+import {ipcMain, BrowserWindow, IpcMainEvent} from 'electron';
+import {globalInfo} from '../constant';
+import {getIconPath, isMac} from '../utils';
 
 let timer: ReturnType<typeof setTimeout> | null = null;
 
 export const createMainWindow = () => {
   globalInfo.mainWin = new BrowserWindow({
-    width: 1080,
-    height: 750,
-    minWidth: 1080,
-    minHeight: 750,
+    width: 800,
+    height: 550,
+    minWidth: 800,
+    minHeight: 550,
     titleBarStyle: 'hidden',
     webPreferences: {
-      nodeIntegration: false, // 为了解决require 识别问题
+      nodeIntegration: false,
       contextIsolation: true, // 这里需要设置为 true， 否则导入 preload.js 会报错
       preload: path.join(__dirname, './preload.js'),
       // 如果是开发模式可以使用devTools 调试
       // devTools: process.env.NODE_ENV === 'development' || config.build.openDevTools,
-      // 在macos中启用橡皮动画
+      // 在macos中启用滚动回弹效果
       scrollBounce: process.platform === 'darwin'
     },
     // 设置 transparent 会导致 win.restore() 失效
@@ -28,38 +28,40 @@ export const createMainWindow = () => {
   });
 
   // 禁止右键开启右键菜单
-  globalInfo.mainWin?.hookWindowMessage(278, function (e) {
-    if (timer) {
-      clearTimeout(timer);
-      timer = null;
-    }
-    globalInfo.mainWin?.setEnabled(false); //窗口禁用
-    timer = setTimeout(() => {
-      globalInfo.mainWin?.setEnabled(true);
-    }, 100); //延时太快会立刻启动，太慢会妨碍窗口其他操作，可自行测试最佳时间
-    return true;
-  });
+  if (!isMac) {
+    globalInfo.mainWin?.hookWindowMessage(278, function (e) {
+      if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
+      globalInfo.mainWin?.setEnabled(false); //窗口禁用
+      timer = setTimeout(() => {
+        globalInfo.mainWin?.setEnabled(true);
+      }, 100); //延时太快会立刻启动，太慢会妨碍窗口其他操作，可自行测试最佳时间
+      return true;
+    });
+  }
 
   globalInfo.mainWin?.webContents.openDevTools();
 
   globalInfo.mainWin?.loadURL('http://localhost:5173');
 };
 
-ipcMain.on('test', (e, status) => {
+ipcMain.on('test', (e: IpcMainEvent, status: string) => {
   console.log(status, 'test');
   e.sender.send('test', 'main win send message to render: ' + status);
 });
 
-ipcMain.on('info', (e, status) => {
+ipcMain.on('info', (e: IpcMainEvent, status: number) => {
   console.log(status, 'info');
-  e.sender.send('info', { id: status, title: 'Electron Vue3 template' });
+  e.sender.send('info', {id: status, title: 'Electron Vue3 template'});
 });
 
 ipcMain.on('win-min', () => {
   globalInfo.mainWin?.minimize();
 });
 
-ipcMain.on('win-max', (e) => {
+ipcMain.on('win-max', (e: IpcMainEvent) => {
   if (globalInfo.mainWin?.isMaximized()) {
     globalInfo.mainWin?.restore();
   } else {

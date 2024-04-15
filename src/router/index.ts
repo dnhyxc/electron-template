@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import {createRouter, createWebHistory} from 'vue-router';
 
 export const routes = [
   {
@@ -25,9 +25,17 @@ export const routes = [
           title: '详情'
         },
         component: () => import('@/views/detail/index.vue')
+      },
+      {
+        path: '/setting',
+        name: 'setting',
+        meta: {
+          title: '设置'
+        },
+        component: () => import('@/views/setting/index.vue')
       }
     ],
-    redirect: { name: 'home' }
+    redirect: {name: 'home'}
   },
   {
     path: '/login',

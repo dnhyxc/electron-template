@@ -8,6 +8,14 @@ export const MENU_LIST = [
     active: 'icon-home'
   },
   {
+    name: '设置',
+    key: 'setting',
+    path: '/setting',
+    icon: 'icon-Settings',
+    fillIcon: 'icon-Settings',
+    active: 'icon-Settings'
+  },
+  {
     name: '登录',
     key: 'login',
     path: '/login',

@@ -8,11 +8,12 @@
   <el-aside :class="`${checkOS() === 'mac' && 'mac-aside-wrap'} aside-wrap`" width="170">
     <div class="menu-list">
       <div class="header">
-        <Icon class-name="icon-hd" size="40px" padding="0 10px 4px 0" background="" drag="drag" />
+        <Icon class-name="icon-hd" size="40px" padding="0 10px 4px 0" background="" drag="drag"/>
         <span class="name">dnhyxc</span>
       </div>
-      <div v-for="menu in MENU_LIST" class="menu-item" @click="onClick(menu)">
-        <Icon :class-name="menu.icon" padding="0 10px 0 0" size="20px" color="#000" />
+      <div v-for="menu in MENU_LIST" :class="`menu-item ${route.path === menu.path && 'active'}`"
+           @click="onClick(menu)">
+        <Icon :class-name="menu.icon" padding="0 10px 0 0" size="20px" color="#000"/>
         <span>{{ menu.name }}</span>
       </div>
     </div>
@@ -20,13 +21,14 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
-import { checkOS } from '@/utils';
-import { MENU_LIST } from '@/constant';
-import { MenuListParams } from '@/typings';
+import {useRouter, useRoute} from 'vue-router';
+import {checkOS} from '@/utils';
+import {MENU_LIST} from '@/constant';
+import {MenuListParams} from '@/typings';
 import Icon from '@/components/Icon.vue';
 
 const router = useRouter();
+const route = useRoute();
 
 const onClick = (menu: MenuListParams) => {
   router.push(menu.path);
@@ -78,12 +80,17 @@ const goBack = () => {
         background: var(--hover-bg);
       }
     }
+
+    .active {
+      color: var(--active);
+    }
   }
 }
 
 .mac-aside-wrap {
   .menu-list {
-    margin-top: 28px;
+    padding-top: 28px;
+    box-sizing: border-box;
   }
 }
 </style>

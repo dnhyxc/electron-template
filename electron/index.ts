@@ -1,9 +1,9 @@
 // @ts-ignore
 import path from 'path';
-import { app, Tray } from 'electron';
-import { createMainWindow } from './windows/main-win';
-import { isDev, isMac, getIconPath, createContextMenu } from './utils';
-import { globalInfo } from './constant';
+import {app, Tray} from 'electron';
+import {createMainWindow} from './windows/main-win';
+import {isDev, isMac, getIconPath, createContextMenu} from './utils';
+import {globalInfo} from './constant';
 
 // 屏蔽警告
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true';
