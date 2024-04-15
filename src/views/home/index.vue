@@ -8,13 +8,13 @@
   <div class="container">
     <div>
       <a href="https://www.electronjs.org/" target="_blank">
-        <img src="@/assets/electron.svg" class="logo" alt="Electron logo" />
+        <img src="@/assets/electron.svg" class="logo" alt="Electron logo"/>
       </a>
       <a href="https://vuejs.org/" target="_blank">
-        <img src="@/assets/vue.svg" class="logo vue" alt="Vue logo" />
+        <img src="@/assets/vue.svg" class="logo vue" alt="Vue logo"/>
       </a>
     </div>
-    <HelloWorld msg="Electron + Vue3 + Template" />
+    <HelloWorld msg="Electron + Vue3 + Template"/>
     <div class="action">
       <el-button type="primary" @click="onSendMsgToMainWin">发送消息给主进程</el-button>
       <el-button type="success" @click="toDetail">前往详情</el-button>
@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 import HelloWorld from '@/components/HelloWorld.vue';
-import { useRouter } from 'vue-router';
+import {useRouter} from 'vue-router';
 
 const router = useRouter();
 

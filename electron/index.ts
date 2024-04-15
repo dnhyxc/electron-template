@@ -64,3 +64,9 @@ app.on('activate', () => {
     globalInfo.mainWin?.show();
   }
 });
+
+
+// 只有显式调用quit才退出系统，区分MAC系统程序坞退出和点击X关闭退出
+app.on('before-quit', () => {
+  globalInfo.willQuitApp = true;
+});

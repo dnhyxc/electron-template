@@ -5,9 +5,9 @@
  * index.vue
 -->
 <template>
-  <div class="header-warp">
+  <div :class="`header-warp ${checkOS() === 'mac' && 'mac-header-warp'}`">
     <div class="left">
-      <Icon icon-name="icon-zjt" class-name="icon-zjt back" @click="goBack" />
+      <Icon icon-name="icon-zjt" class-name="icon-zjt back" @click="goBack"/>
       <div class="title">{{ route.meta.title }}</div>
     </div>
     <div class="right">
@@ -21,9 +21,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
-import { HEADER_ACTIONS } from '@/constant';
+import {ref} from 'vue';
+import {useRouter, useRoute} from 'vue-router';
+import {HEADER_ACTIONS} from '@/constant';
+import {checkOS} from "@/utils";
 import Icon from '@/components/Icon.vue';
 
 const router = useRouter();
@@ -85,6 +86,12 @@ const goBack = () => {
     display: flex;
     align-items: center;
     justify-content: flex-end;
+  }
+}
+
+.mac-header-warp {
+  .right {
+    display: none;
   }
 }
 </style>

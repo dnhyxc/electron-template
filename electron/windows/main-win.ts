@@ -1,6 +1,6 @@
 // @ts-ignore
 import path from 'path';
-import {ipcMain, BrowserWindow, IpcMainEvent} from 'electron';
+import {ipcMain, BrowserWindow, IpcMainEvent, app} from 'electron';
 import {globalInfo} from '../constant';
 import {getIconPath, isMac} from '../utils';
 
@@ -45,12 +45,21 @@ export const createMainWindow = () => {
   globalInfo.mainWin?.webContents.openDevTools();
 
   globalInfo.mainWin?.loadURL('http://localhost:5173');
-};
 
-ipcMain.on('test', (e: IpcMainEvent, status: string) => {
-  console.log(status, 'test');
-  e.sender.send('test', 'main win send message to render: ' + status);
-});
+  // 关闭按钮处理 - Mac是点击最小化
+  globalInfo.mainWin?.on('closed', () => {
+    globalInfo.mainWin = null;
+    globalInfo.tray = null;
+  });
+
+  globalInfo.mainWin?.on('close', (event) => {
+    if (!globalInfo.willQuitApp) {
+      event.preventDefault();
+      globalInfo.mainWin?.hide();
+      globalInfo.mainWin?.setSkipTaskbar(true);
+    }
+  });
+};
 
 ipcMain.on('info', (e: IpcMainEvent, status: number) => {
   console.log(status, 'info');

@@ -1,23 +1,24 @@
 // @ts-ignore
 import path from 'path';
-import { defineConfig } from 'vite';
+import {defineConfig} from 'vite';
 import vue from '@vitejs/plugin-vue';
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
-import { viteElectronPlugin } from './plugins/vite-electron-plugin';
-import { viteElectronBuildPlugin } from './plugins/vite-electron-build-plugin';
+import {ElementPlusResolver} from 'unplugin-vue-components/resolvers';
+import {viteElectronPlugin} from './plugins/vite-electron-plugin';
+import {viteElectronBuildPlugin} from './plugins/vite-electron-build-plugin';
+import {viteElectronRuntimePlugin} from './plugins/vite-electron-runtime-plugin'
 
 export default defineConfig({
   plugins: [
     vue(),
-    viteElectronPlugin(),
+    viteElectronRuntimePlugin(),
     viteElectronBuildPlugin(),
     AutoImport({
       resolvers: [ElementPlusResolver()]
     }),
     Components({
-      resolvers: [ElementPlusResolver({ importStyle: 'sass' })]
+      resolvers: [ElementPlusResolver({importStyle: 'sass'})]
     })
   ],
   resolve: {

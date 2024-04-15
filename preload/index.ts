@@ -1,11 +1,8 @@
-import { contextBridge, ipcRenderer } from 'electron';
+import {contextBridge, ipcRenderer} from 'electron';
 
 const sendMethods = {
-  sendTest: (type: string) => {
-    ipcRenderer.send('test', type);
-  },
   sendInfo: (id: number) => {
-    console.log(id, 'id222');
+    console.log(id, 'sendMethods');
     ipcRenderer.send('info', id);
   },
   sendWinMin: () => {
@@ -20,11 +17,6 @@ const sendMethods = {
 };
 
 const onMethods = {
-  onTest: (cb: (value: string) => void) => {
-    // 移除之前添加的一次性监听器
-    ipcRenderer.removeAllListeners('info');
-    ipcRenderer.on('test', (e, value: string) => cb(value));
-  },
   onGetInfo: (cb: (info: { id: number; title: string }) => void) => {
     // 移除之前添加的一次性监听器
     ipcRenderer.removeAllListeners('info');
