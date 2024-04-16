@@ -1,23 +1,23 @@
 // @ts-ignore
 import path from 'path';
-import {defineConfig} from 'vite';
+import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
-import {ElementPlusResolver} from 'unplugin-vue-components/resolvers';
-import {viteElectronBuildPlugin} from './plugins/vite-electron-build-plugin';
-import {viteElectronRuntimePlugin} from './plugins/vite-electron-runtime-plugin'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
+import { ViteElectronBuildPlugin } from './plugins/vite-electron-build-plugin';
+import { ViteElectronRuntimePlugin } from './plugins/vite-electron-runtime-plugin';
 
 export default defineConfig({
   plugins: [
     vue(),
-    viteElectronRuntimePlugin(),
-    viteElectronBuildPlugin(),
+    ViteElectronRuntimePlugin(),
+    ViteElectronBuildPlugin(),
     AutoImport({
       resolvers: [ElementPlusResolver()]
     }),
     Components({
-      resolvers: [ElementPlusResolver({importStyle: 'sass'})]
+      resolvers: [ElementPlusResolver({ importStyle: 'sass' })]
     })
   ],
   resolve: {
@@ -31,7 +31,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@use "@/styles/element.scss" as *;`
+        additionalData: '@use "@/styles/element.scss" as *;'
       }
     }
   },

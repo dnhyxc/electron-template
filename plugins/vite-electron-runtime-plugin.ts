@@ -2,11 +2,11 @@
 import fs from 'fs';
 // @ts-ignore
 import path from 'path';
-import {spawn} from 'child_process';
-import type {ChildProcessWithoutNullStreams} from 'child_process';
-import type {Plugin, ViteDevServer} from 'vite';
-import type {AddressInfo} from 'net';
-import {buildConfig} from './vite.common-config';
+import { spawn } from 'child_process';
+import type { ChildProcessWithoutNullStreams } from 'child_process';
+import type { Plugin, ViteDevServer } from 'vite';
+import type { AddressInfo } from 'net';
+import { buildConfig } from './vite.common-config';
 
 // electron 进程
 let electronProcess: ChildProcessWithoutNullStreams;
@@ -20,8 +20,8 @@ const getTimer = () => {
   const hours = now.getHours();
   const minutes = now.getMinutes();
   const seconds = now.getSeconds();
-  return `${hours}时${minutes}分${seconds}秒`
-}
+  return `${hours}时${minutes}分${seconds}秒`;
+};
 
 // 获取 electron 进程的 stdout 输出 log 信息
 const getLog = (data: Buffer) => {
@@ -43,7 +43,7 @@ const onExit = (code: number, signal: string, server: ViteDevServer) => {
     // 手动终止后，重置标志位
     manualTermination = false;
   }
-}
+};
 
 // 文件更改后的回调
 const onFileChange = (curr: fs.Stats, prev: fs.Stats, IP: string, server: ViteDevServer) => {
@@ -60,7 +60,7 @@ const onFileChange = (curr: fs.Stats, prev: fs.Stats, IP: string, server: ViteDe
     // 监听 electron 进程的退出时，同时退出 vite 服务及 node 进程
     electronProcess?.on('exit', (code: number, signal: string) => onExit(code, signal, server));
   }
-}
+};
 
 // 监听 electron 文件夹中文件的更改
 const watchFolderFilesChange = (folderPath: string, IP: string, server: ViteDevServer) => {
@@ -93,10 +93,10 @@ const watchFolderFilesChange = (folderPath: string, IP: string, server: ViteDevS
 // 监听 preload 文件更改
 const watchPreloadFileChange = (IP: string, server: ViteDevServer) => {
   fs.watchFile('preload/index.ts', (curr: fs.Stats, prev: fs.Stats) => onFileChange(curr, prev, IP, server));
-}
+};
 
 // 导出Vite插件函数
-export const viteElectronRuntimePlugin = (): Plugin => {
+export const ViteElectronRuntimePlugin = (): Plugin => {
   return {
     name: 'vite-electron-runtime-plugin',
     // 在configureServer中实现插件的逻辑
@@ -113,7 +113,7 @@ export const viteElectronRuntimePlugin = (): Plugin => {
         // 监听 electron 文件夹中文件内容更改
         watchFolderFilesChange('electron', IP, server);
         // 监听 preload 代码的更改
-        watchPreloadFileChange(IP, server)
+        watchPreloadFileChange(IP, server);
         // 监听 electron 进程的 stdout 输出 log 信息
         electronProcess?.stdout?.on('data', getLog);
         // 监听 electron 进程的退出时，同时退出 vite 服务及 node 进程
