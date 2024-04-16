@@ -12,7 +12,7 @@
 import { computed } from 'vue';
 
 interface IProps {
-  className?: string;
+  className: string;
   color?: string;
   size?: string;
   padding?: string;
@@ -21,6 +21,7 @@ interface IProps {
 }
 
 const props = withDefaults(defineProps<IProps>(), {
+  color: '',
   size: '16px',
   padding: '10px',
   background: 'var(--hover-bg)',

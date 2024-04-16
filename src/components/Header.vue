@@ -7,12 +7,13 @@
 <template>
   <div :class="`header-warp ${checkOS() === 'mac' && 'mac-header-warp'}`">
     <div class="left">
-      <Icon icon-name="icon-zjt" class-name="icon-zjt back" @click="goBack"/>
+      <Icon icon-name="icon-zjt" class-name="icon-zjt back" @click="goBack" />
       <div class="title">{{ route.meta.title }}</div>
     </div>
     <div class="right">
       <Icon
         v-for="(i, key) of HEADER_ACTIONS"
+        :key="key"
         :class-name="`${key === 'max' && winStatus ? 'icon-ckxh' : i} icon`"
         @click="onClick(key)"
       />
@@ -21,10 +22,10 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue';
-import {useRouter, useRoute} from 'vue-router';
-import {HEADER_ACTIONS} from '@/constant';
-import {checkOS} from "@/utils";
+import { ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { HEADER_ACTIONS } from '@/constant';
+import { checkOS } from '@/utils';
 import Icon from '@/components/Icon.vue';
 
 const router = useRouter();
